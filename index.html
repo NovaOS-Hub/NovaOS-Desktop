@@ -1,66 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="">
+  <head>
+    <style>
+        html:not(:has(.setupbar)){background-color: black;}
+    </style>
+    </style>
+    <link rel="stylesheet" id="stockstyles" href="./assets/style.css" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="shortcut icon" href="./assets/img/systemIcons/os.svg" />
+    <link rel="apple-touch-icon" href="./assets/img/systemIcons/os.svg" />
+    <title>NovaOS NG</title>
+    <!-- Make sure your page supports utf-8 characterset. -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Load TensorFlow.js. This is required to use the qna model. -->
+    <script src="./assets/lib/tf.js"></script>
+    <!-- Load the qna model. -->
+    <script src="./assets/models/qna.model"></script>
+    <!-- Load the Universal Sentence Encoder. This is required to use the novaOS AI. -->
+    <script src="./assets/lib/use.js"></script>
+  </head>
+  <style>
+    @font-face {
+      font-family: "LucideIcons";
+      src: url(https://unpkg.com/lucide-static@latest/font/Lucide.ttf)
+        format("truetype");
+    }
+  </style>
+  <script>
+    var abt = {
+      lastmod: "July 29, 2024",
+      ver: "0.0.9",
+      product: "novaOS",
+    };
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <title>novaos desktop</title>
-    <script src="assets/libs/j.js"></script>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <!-- <script src="assets/libs/jui/jquery-ui.min.js"></script> -->
-    <!-- <link rel="stylesheet" href="assets/libs/jui/jquery-ui.min.css"> -->
-</head>
+    var sys = {
+      deskid: undefined,
+      setupd: undefined,
+      migrid: 1,
+      autodarkacc: undefined,
+      webdrop: true,
+      name: "Default User",
+      isIOT: false,
+      iotApp: null,
+      idLen: 8,
+    };
 
-<body>
-    <div class="floatingStatus">
-        <p class="jeremydorgan"></p>
-        <p class="jeremydorganFriend"></p>
+    var el = {
+      taskbar: undefined,
+      sm: undefined,
+      tr: undefined,
+    };
+  </script>
+
+  <body style="display: none !important;">
+    <!--    <div class="circle"></div>
+    <div class="circle2"></div> -->
+    <div id="setuparea"></div>
+    <div style="display: none" id="contcent" class="contcent">
+      <p class="h3">Control Center</p>
+      <p class="lockdown">
+        Your DeskID is <span class="mcode bold deskid">----</span>
+      </p>
+      <span
+        class="ckbx"
+        id="dnd"
+        onclick='localStorage.setItem("doNotDisturb", localStorage.getItem("doNotDisturb") == "false");if(localStorage.getItem("doNotDisturb") == "false") this.classList.remove("on"); else this.classList.add("on")'
+      >
+        Do not disturb
+      </span>
+      <!-- <span class="ckbx" id="netw" onclick='localStorage.setItem("networking", localStorage.getItem("networking") == "false");if(localStorage.getItem("networking") == "false") this.classList.remove("on"); else this.classList.add("on")'>
+            Network Services
+        </span> -->
+      <select id="dm">
+        <option value="titol" disabled>Display Mode</option>
+        <option value="dark">Dark mode</option>
+        <option value="light">Light</option>
+        <option value="auto">Auto</option>
+        <option value="cml">Clear Mode: Light</option>
+        <option value="cmd">Clear Mode: Dark</option>
+      </select>
+      <p class="med" style="margin-top: 3px; margin-bottom: 3px">
+        Notifications (select to delete)
+      </p>
+      <div id="notif">
+        <!-- <div class="notif2" id="defnotif">No notifications yet.</div> -->
+      </div>
+      <button
+        id="cccb"
+        class="b1"
+        style="margin-top: 7px; width: 60%"
+        onclick="wd.controls.toggle()"
+      >
+        Close
+      </button>
     </div>
-<<<<<<< Updated upstream
-    <span class="splitLeftHere wsplit"></span>
-    <span class="splitRightHere wsplit"></span>
-    <div class="windowSafeArea"></div>
-    <dock>
-        <dockcontent>
-            <img class="dockicon" src="./assets/icons/apps/appdrawer.svg" />
-            <img class="dockicon" src="./assets/icons/apps/cast.svg" />
-            <img class="dockicon" src="./assets/icons/apps/networking.svg" />
-            <img class="dockicon" src="./assets/icons/apps/os.svg" />
-            <img class="dockicon" src="./assets/icons/apps/store.svg" />
-            <img class="dockicon" src="./assets/icons/apps/settings.svg" />
-            <img class="dockicon" src="./assets/icons/apps/wdcompat.svg" />
-            <img class="dockicon active" src="./assets/icons/apps/files.svg" />
-        </dockcontent>
-    </dock>
-    <taskbar class="edgePiece">
-        <zone class="left">
-            <pill class="black"><span class="material-symbols-outlined">search</span></pill>
-            <pill class="lblue"><span class="material-symbols-outlined">notifications</span>2</pill>
-            <pill class="lpurp"><span class="material-symbols-outlined">check</span>2</pill>
-        </zone>
-        <zone class="middle" style="font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;">
-            <span class="material-symbols-outlined">globe</span>
-            <span class="material-symbols-outlined">folder_open</span>
-            <span class="material-symbols-outlined">settings</span>
-            <span class="material-symbols-outlined"></span>
-        </zone> 
-        <zone class="right">
-            <pill class="yell"><span class="material-symbols-outlined">leak_add</span></pill>
-            <pill class="lgree"><span class="material-symbols-outlined">cast</span></pill>
-            <pill class="lred">4:20 <span class="material-symbols-outlined">Schedule</span></pill>
-        </zone>
-    </taskbar>
-    <taskbar class="edgePieceLeft" hidden><select multiple="no" name="" id="windowList">
-            <option value="droppedTitle" selected default>Minimised Windows</option>
-        </select></taskbar>
-    <script src="assets/libs/nwm/nwm.init.js" type="module"></script>
-    <script type="module" src="assets/js/index.js"></script>
-</body>
-
-</html>
-=======
     <div id="desktopNotificationsArea"></div>
     <div id="background"></div>
     <!-- <div class="splashscreen">
@@ -79,9 +116,6 @@
         </div>
     </div> -->
     <div class="winarea"></div>
-  </body>
-</html>
-
 <script src="./assets/code/vals.js"></script>
 <script src="./assets/lib/jq.js"></script>
 <script src="./assets/lib/jszip.js"></script>
@@ -288,4 +322,5 @@
     }
   });
 </script>
->>>>>>> Stashed changes
+</body>
+</html>

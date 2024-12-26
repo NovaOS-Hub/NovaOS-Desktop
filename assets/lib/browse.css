@@ -1,0 +1,55 @@
+.tabbar {
+    background-color: var(--ui2);
+    padding: 6px;
+    border-bottom: 1px solid var(--ui3);
+    box-sizing: border-box;
+    text-align: left;
+    flex: 0 0 auto;
+}
+
+.browsertab {
+    border-radius: var(--rad1);
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    overflow: auto;
+    display: none;
+    padding: 7px;
+}
+
+.browsercont {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%; height: 100%;
+}
+
+.browsersearch {
+    width: 130px;
+}
+
+.browserbutton {
+    padding: 2px 8px !important;
+    font-size: 15px;
+}
+
+.browserclosetab {
+    background-color: transparent;
+    border: none;
+    font-size: 14px;
+    font-family: 'PoppinsB', Arial;
+    border-radius: 4px;
+}
+
+.browserclosetab:hover {
+    background-color: rgba(var(--accent), 0.3);
+}
+
+.browsertitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    user-select: none;
+}
