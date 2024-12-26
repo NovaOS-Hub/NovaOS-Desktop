@@ -1,0 +1,24 @@
+{
+  "devDependencies": {
+    "jsdoc": "^4.0.3",
+    "tidy-jsdoc": "^1.4.1",
+    "live-server": "1.2.2"
+  },
+  "name": "NovaOS",
+  "version": "1.0.0",
+  "description": "Web Based os for the rest of us or smt",
+  "scripts": {
+    "live": "live-server --browser=xdg-open",
+    "lc": "live-server --browser=google-chrome-stable"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nova-ind/desktop.git"
+  },
+  "author": "Nova",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nova-ind/desktop/issues"
+  },
+  "homepage": "https://github.com/nova-ind/desktop#readme"
+}

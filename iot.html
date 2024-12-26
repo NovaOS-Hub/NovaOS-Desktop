@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="./assets/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" href="./assets/img/systemIcons/os.svg">
+    <link rel="apple-touch-icon" href="./assets/img/systemIcons/os.svg">
+    <title>NovaOS NG</title>
+    <!-- Make sure your page supports utf-8 characterset. -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Load TensorFlow.js. This is required to use the qna model. -->
+    <script src="./assets/lib/tf.js"> </script>
+    <!-- Load the qna model. -->
+    <script src="./assets/models/qna.model"> </script>
+    <!-- Load the Universal Sentence Encoder. This is required to use the novaOS AI. -->
+    <script src="./assets/lib/use.js"></script>
+</head>
+<script>
+    var abt = {
+        lastmod: "July 29, 2024",
+        ver: "0.0.9",
+    }
+
+    var sys = {
+        deskid: undefined,
+        setupd: undefined,
+        migrid: 1,
+        autodarkacc: undefined,
+        webdrop: true,
+        name: "Default User",
+        isIOT: true,
+        iotApp: "cast",
+        idLen: 8,
+    }
+
+    var el = {
+        taskbar: undefined,
+        sm: undefined,
+        tr: undefined,
+    }
+</script>
+
+<body iot="true">
+    <div class="topbar"><div class="title"><button class="b1 time" onclick="wd.controls.toggle()">14:07:10</button></div></div>
+    <div id="background">
+    </div>
+    <!--    <div class="circle"></div>
+    <div class="circle2"></div> -->
+    <div id="setuparea">
+    </div>
+    <div style="display: none;" id="contcent" class="contcent">
+        <p class="h3">Control Center</p>
+        <p class="lockdown">Your DeskID is <span class="mcode bold deskid">----</span></p>
+        <span class="ckbx" id="dnd" onclick='localStorage.setItem("doNotDisturb", localStorage.getItem("doNotDisturb") == "false");if(localStorage.getItem("doNotDisturb") == "false") this.classList.remove("on"); else this.classList.add("on")'>
+            Do not disturb
+        </span>     
+        <!-- <span class="ckbx" id="netw" onclick='localStorage.setItem("networking", localStorage.getItem("networking") == "false");if(localStorage.getItem("networking") == "false") this.classList.remove("on"); else this.classList.add("on")'>
+            Network Services
+        </span> -->
+        <select id="dm">
+            <option value="titol" disabled>Display Mode</option>
+            <option value="dark">Dark mode</option>
+            <option value="light">Light</option>
+            <option value="auto">Auto</option>
+            <option value="cml">Clear Mode: Light</option>
+            <option value="cmd">Clear Mode: Dark</option>
+        </select>
+        <p class="med" style="margin-top: 3px; margin-bottom: 3px">Notifications (select to delete)</p>
+        <div id="notif">
+            <!-- <div class="notif2" id="defnotif">No notifications yet.</div> -->
+        </div>
+        <button id="cccb" class="b1" style="margin-top: 7px; width: 60%;" onclick="wd.controls.toggle()">Close</button>
+    </div>
+    <div id="desktopNotificationsArea">
+        
+    </div>
+    <!-- <div class="splashscreen">
+        <div class="splashscreen-content">
+            <div class="splashscreen-logo">
+                <img src="./assets/img/systemIcons/os.svg" alt="NovaOS NG">
+            </div>
+            <div class="splashscreen-text">
+                <h1>NovaOS</h1>
+                <progress id="currentComponent"></progress>
+                <br>
+                <small id="currentComponentText"></small>      
+                <p>Version 0.0.9</p>
+                <button onclick="document.querySelector('.splashscreen').remove()" class="b1">Skip (not reccomended)</button>
+            </div>
+        </div>
+    </div> -->
+</body>
+
+</html>
+<script src="./assets/code/vals.js"></script>
+<script src="./assets/lib/jq.js"></script>
+<script src="./assets/lib/jszip.js"></script>
+<script src="./assets/lib/peer.js"></script>
+<script src="./assets/lib/picker.js"></script>
+<script src="./assets/code/core.js"></script>
+<script src="./assets/code/wm.js"></script>
+<script src="./assets/code/services.js"></script>
+<script src="./assets/code/ui.js"></script>
+<script src="./assets/code/fs.js"></script>
+<script src="./assets/code/apps.js"></script>
+<script>
+    async function boot() {
+        var sd = "balh"
+        sd = await fs.read('/user/info/name');
+        console.log("baah", sd);
+            const deskid = await fs.read('/system/deskid');
+            await ptp.go(deskid);
+
+        if (sd !== undefined) {
+            const name = await fs.read('/user/info/name');
+            const darkpref = await fs.read('/user/info/lightdarkpref');
+            const lightdark = await fs.read('/user/info/lightdark');
+            const color = await fs.read('/user/info/color');
+            await wd.desktop(name, deskid, 'wait');
+            sys.setupd = true;
+
+            if (darkpref === "auto") {
+                sys.autodarkacc = true;
+            } else {
+                sys.autodarkacc = false;
+            }
+            if (lightdark === "dark") {
+                wd.dark();
+            } else if (lightdark === "clear") {
+                wd.clearm();
+            } else if (lightdark === "clear2") {
+                wd.clearm2();
+            } else {
+                wd.light();
+            }
+            ui.crtheme(color);
+            console.log(color)
+            if (!color) {
+                fs.write('/user/info/color', '#C68A00');
+                ui.crtheme('#C68A00');
+            }
+        } else {
+            const id = gen(sys.idLen);
+            await ptp.go(id);
+            await fs.mkdir('/system');
+            await fs.write('/system/deskid', id);
+            app.setup.init();
+            sys.setupd = false;
+        }
+
+        const dropZone = document.body;
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function handleDrop(e) {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+
+            handleFiles(files);
+        }
+
+        async function handleFiles(files) {
+            let filesArray = [...files];
+            filesArray.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const contents = e.target.result;
+                    fs.write(`/user/files/${file.name}`, contents);
+                };
+
+                if (file.type.startsWith('image')) {
+                    reader.readAsDataURL(file);
+                } else {
+                    reader.readAsArrayBuffer(file);
+                }
+            });
+        }
+    }
+    if(localStorage.getItem("networking") == "false") {
+        document.querySelector("#netw").classList.remove("on");
+    } else {
+        document.querySelector("#netw").classList.add("on")
+    }
+    if(localStorage.getItem("doNotDisturb") == "false") {
+        document.querySelector("#dnd").classList.remove("on");
+    } else {
+        document.querySelector("#dnd").classList.add("on")
+    }
+
+    $("#dm").on("change", function() {
+        if($(this).val() == "dark") {
+            wd.dark();
+            fs.write('/user/info/lightdark', 'dark');
+        } else if($(this).val() == "light") {
+            wd.light();
+            fs.write('/user/info/lightdark', 'light');
+        } else if($(this).val() == "auto") {
+            fs.write('/user/info/lightdarkpref', 'auto');
+                fs.read('/user/info/color').then((col) => ui.crtheme(col));
+                sys.autodarkacc = true;
+        } else if($(this).val() == "cml") {
+            wd.clearm();
+            fs.write('/user/info/lightdark', 'clear');
+        } else if($(this).val() == "cmd") {
+            wd.clearm2();
+            fs.write('/user/info/lightdark', 'clear2');
+        }
+    });
+</script>

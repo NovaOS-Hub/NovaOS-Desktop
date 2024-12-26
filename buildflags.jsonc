@@ -1,0 +1,11 @@
+{
+    "DEFAULT_SYS_FS":"opfs",
+    "GUEST_ENABLED": true,
+    "LOGS": {
+        "FS": 0, // any of: NONE: 0, ACCESS: 2, ALL:3
+        "DEBUG": false,
+        "APP_SYSTEM": false,
+        "SW": true,
+        "VERBOSITY": "FRIENDLY" // any of NERD, FRIENDLY /thats not very nice :(
+    }
+}

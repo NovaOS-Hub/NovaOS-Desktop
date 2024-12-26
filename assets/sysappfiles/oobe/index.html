@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OOBE</title>
+</head>
+
+<body>
+  <div class="pageOne">
+    <img class="wp" src="/wallpaper/tricirc?4F46E5#581C87">
+    <div class="wordClipContainer">
+      <div class="wordScroller">
+        <span class="word">Welcome</span>
+        <span class="word">Bienevue</span>
+        <span class="word">Bonjour</span>
+        <span class="word">Konichiwa</span>
+        <span class="word">Ni Hao</span>
+      </div>
+    </div>
+  </div>
+  <style>
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      width: 100vw;
+    }
+
+    .wordClipContainer {
+      height: 100vh;
+      font-size: 5em;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-style: italic ;
+      display: block;
+      font-weight: bold;
+      overflow: hidden;
+      text-align: center;
+      padding-top: 10px;
+      /* background-color:#4d35bd; */
+      /* border-radius: 10px; */
+      /* box-shadow: #261b58 1px 1px 10px; */
+    }
+
+    .word {
+      margin-bottom: calc(50vh - calc(1.2em / 2));
+      margin-top: calc(50vh - calc(1.2em / 2));
+      display: block;
+      text-shadow: #00000071 2px 2px 10px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wordScroller {
+      animation: balls 7s ease-in-out 0.5s infinite forwards;
+      position: relative;
+
+    }
+
+    @keyframes balls {
+      20% {
+        top: 0px;
+      }
+
+      40% {
+        top: -2em;
+
+      }
+
+      60% {
+        top: -4em;
+      }
+
+      80% {
+        top: -6em;
+      }
+
+      100% {
+        top: -8em;
+      }
+    }
+
+    .wp {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100vw;
+      height: 100vh;
+      object-fit: fill;
+      z-index: -1;
+      -webkit-user-drag: none;
+      text-align: center;
+    }
+  </style>
+</body>
+
+</html>
