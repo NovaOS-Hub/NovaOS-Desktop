@@ -18,6 +18,7 @@
         <p class="jeremydorgan"></p>
         <p class="jeremydorganFriend"></p>
     </div>
+<<<<<<< Updated upstream
     <span class="splitLeftHere wsplit"></span>
     <span class="splitRightHere wsplit"></span>
     <div class="windowSafeArea"></div>
@@ -59,3 +60,232 @@
 </body>
 
 </html>
+=======
+    <div id="desktopNotificationsArea"></div>
+    <div id="background"></div>
+    <!-- <div class="splashscreen">
+        <div class="splashscreen-content">
+            <div class="splashscreen-logo">
+                <img src="./assets/img/systemIcons/os.svg" alt="NovaOS NG">
+            </div>
+            <div class="splashscreen-text">
+                <h1>NovaOS</h1>
+                <progress id="currentComponent"></progress>
+                <br>
+                <small id="currentComponentText"></small>
+                <p>Version 0.0.9</p>
+                <button onclick="document.querySelector('.splashscreen').remove()" class="b1">Skip (not reccomended)</button>
+            </div>
+        </div>
+    </div> -->
+    <div class="winarea"></div>
+  </body>
+</html>
+
+<script src="./assets/code/vals.js"></script>
+<script src="./assets/lib/jq.js"></script>
+<script src="./assets/lib/jszip.js"></script>
+<script src="./assets/lib/peer.js"></script>
+<script src="./assets/lib/picker.js"></script>
+<script src="./assets/code/core.js"></script>
+<script src="./assets/code/wm.js"></script>
+<script src="./assets/code/services.js"></script>
+<script src="./assets/code/ui.js"></script>
+<script src="./assets/code/fs.js"></script>
+<script src="./assets/code/apps.js"></script>
+<script>
+  // best effort cucking defaults because i can't import this shit quick enough for this to not shit itself
+        window.flags = {
+    "DEFAULT_SYS_FS":"opfs",
+    "GUEST_ENABLED": true,
+    "LOGS": {
+        "FS": 0,
+        "DEBUG": false,
+        "APP_SYSTEM": false,
+        "SW": false,
+        "VERBOSITY": "FRIENDLY"
+    }
+}
+      fetch("./buildflags.jsonc").then(res => {
+        res.text().then(text => {
+          text = text.replaceAll(/\/\/.*\n/g,"\n");
+          console.log(text)
+          window.flags=JSON.parse(text);
+          console.log(window.flags)
+        })
+      })
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("./serviceworker.js")
+      .then((registration) => {
+        if(window.flags.LOGS.SW){
+          console.log("ServiceWorker registered");
+        }
+      })
+      .catch((err) => console.error("ServiceWorker registration failed:", err));
+  }
+  window.onload = function(){
+            document.body.style.display = "block";
+            window.onload = null;
+    }
+  async function boot() {
+    var uname = "EUserNotFound";
+    var lsofuserinfo = await fs.ls("/user/info");
+    if(flags.LOGS.DEBUG) console.log("/user/info Contains: ", lsofuserinfo);
+    function hasNameFile(element, index, array) {
+      return element.name == "name";
+    }
+    if (lsofuserinfo.items !== undefined) {
+      const name = await fs.read("/user/info/name");
+      const deskid = await fs.read("/system/deskid");
+      const darkpref = await fs.read("/user/info/lightdarkpref");
+      const lightdark = await fs.read("/user/info/lightdark");
+      const color = await fs.read("/user/info/color");
+      if ((await fs.read("/system/useCustomDesktopFunc")) == "yes") {
+        try{
+          await eval(
+          `${await fs.read(
+            "/system/customDesktopFunc"
+          )}("${name}", ${deskid}, "wait")`
+        );
+        }
+         catch{
+          await eval(
+          `${await fs.read(
+            "/system/customDesktopFunc"
+          )}.desktop("${name}", ${deskid}, "wait")`
+        );
+         }
+
+      } else {
+        await wd.desktop(name, deskid, "wait");
+      }
+      await ptp.go(deskid);
+      sys.setupd = true;
+
+      if (darkpref === "auto") {
+        sys.autodarkacc = true;
+      } else {
+        sys.autodarkacc = false;
+      }
+      if (lightdark === "dark") {
+        wd.dark();
+      } else if (lightdark === "clear") {
+        wd.clearm();
+      } else if (lightdark === "clear2") {
+        wd.clearm2();
+      } else {
+        wd.light();
+      }
+      ui.crtheme(color);
+      if(flags.LOGS.DEBUG) console.log("Colour Theme set to: ", color);
+      if (!color) {
+        fs.write("/user/info/color", "#C68A00");
+        ui.crtheme("#C68A00");
+      }
+    } else {
+      const id = gen(4);
+      await ptp.go(id);
+      await fs.mkdir("/system");
+      await fs.write("/system/deskid", id);
+      app.setup.init();
+      sys.setupd = false;
+    }
+
+    const dropZone = document.body;
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      dropZone.addEventListener(eventName, preventDefaults, false);
+      document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    dropZone.addEventListener("drop", handleDrop, false);
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function handleDrop(e) {
+      let dt = e.dataTransfer;
+      let files = dt.files;
+
+      handleFiles(files);
+    }
+
+    async function handleFiles(files) {
+      let filesArray = [...files];
+      filesArray.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const contents = e.target.result;
+          fs.write(`/user/files/${file.name}`, contents);
+        };
+
+        if (file.type.startsWith("image")) {
+          reader.readAsDataURL(file);
+        } else {
+          reader.readAsArrayBuffer(file);
+        }
+      });
+    }
+
+    const data = await fs.read("/system/apps.json");
+    if (data) {
+      const apps = JSON.parse(data);
+      try {
+        const response = await fetch("https://appmarket.meower.xyz/refresh");
+        const onlineApps = await response.json();
+        for (const inapp of apps) {
+          await wd.loadapps(inapp, onlineApps, apps);
+        }
+      } catch (err) {
+        console.error(err);
+        try {
+          for (const inapp of apps) {
+            await wd.loadapps(inapp, inapp, inapp);
+          }
+        } catch (error) {
+          if (sys.fucker === false) {
+            sys.fucker = true;
+            fs.del("/system/apps.json");
+            fs.delfold("/system/apps");
+            wm.notif(
+              "App Issues",
+              "All apps were uninstalled due to corruption or an update. Your data is safe, you can reinstall them anytime.",
+              () => app.appmark.init(),
+              "App Market"
+            );
+          }
+        }
+      }
+    } else {
+      fs.write("/system/apps.json", "");
+    }
+  }
+  if (localStorage.getItem("doNotDisturb") == "falsbrthe") {
+    document.querySelector("#dnd").classList.remove("on");
+  } else {
+    document.querySelector("#dnd").classList.add("on");
+  }
+
+  $("#dm").on("change", function () {
+    if ($(this).val() == "dark") {
+      wd.dark();
+      fs.write("/user/info/lightdark", "dark");
+    } else if ($(this).val() == "light") {
+      wd.light();
+      fs.write("/user/info/lightdark", "light");
+    } else if ($(this).val() == "auto") {
+      fs.write("/user/info/lightdarkpref", "auto");
+      fs.read("/user/info/color").then((col) => ui.crtheme(col));
+      sys.autodarkacc = true;
+    } else if ($(this).val() == "cml") {
+      wd.clearm();
+      fs.write("/user/info/lightdark", "clear");
+    } else if ($(this).val() == "cmd") {
+      wd.clearm2();
+      fs.write("/user/info/lightdark", "clear2");
+    }
+  });
+</script>
+>>>>>>> Stashed changes
